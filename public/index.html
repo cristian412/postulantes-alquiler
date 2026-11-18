@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Postulación de alquiler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: amable y ordenado, como la solicitud que entrega una inmobiliaria seria
+   IDEA: una ficha de postulación con la llave del departamento
+   PICTURE: el formulario mismo, bajo un edificio pequeño con una ventana encendida
+   COLOUR and TYPE: blanco, petróleo profundo #0e3b43, amarillo llave #f2b632; Outfit + Inter
+   LAYOUT: una columna tranquila, secciones numeradas por título, botón grande al final */
+:root{color-scheme:light dark;
+  --bg:light-dark(#ffffff,#0b2328);--card:light-dark(#f4f8f8,#10303a);--ink:light-dark(#0e2a30,#e8f2f3);
+  --muted:light-dark(#4b6469,#a9c1c5);--line:light-dark(#cfdcde,#2a4c55);--brand:light-dark(#0e3b43,#7fd0dc);
+  --key:#f2b632;--err:light-dark(#b42318,#ff8a80);--field:light-dark(#ffffff,#0b2328)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+header{background:#0e3b43;color:#fff;padding:clamp(28px,5vw,56px) max(5vw,16px) 0}
+.hwrap{max-width:720px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:20px;align-items:end}
+h1{font:700 clamp(30px,5vw,44px)/1.05 Outfit,sans-serif;margin:0 0 12px;text-wrap:balance}
+header p{margin:0 0 28px;color:#cfe6ea;max-width:52ch}
+header svg{display:block;width:150px;height:auto}
+.rules{max-width:720px;margin:0 auto;padding:20px max(5vw,16px) 0}
+.rules div{background:var(--card);border-radius:14px;padding:16px 18px;border:1px solid var(--line)}
+.rules strong{font-family:Outfit,sans-serif;font-size:18px;display:block;margin-bottom:6px}
+.rules ul{margin:0;padding-left:20px}
+main{max-width:720px;margin:0 auto;padding:8px max(5vw,16px) 64px}
+fieldset{border:0;border-top:1px solid var(--line);margin:28px 0 0;padding:24px 0 0}
+legend{font:600 22px/1.2 Outfit,sans-serif;color:var(--brand);padding:0 0 4px}
+.hint{color:var(--muted);font-size:14px;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 16px}
+.full{grid-column:1/-1}
+label{display:block;font-weight:500;font-size:15px;margin-bottom:6px}
+.req::after{content:" *";color:var(--err)}
+input,select,textarea{width:100%;font:16px Inter,system-ui,sans-serif;color:var(--ink);background:var(--field);
+  border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;min-height:46px}
+textarea{min-height:84px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:3px solid color-mix(in srgb,var(--key) 60%,transparent);border-color:var(--brand)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{margin:0;display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:999px;
+  padding:10px 16px;min-height:44px;cursor:pointer;font-weight:500;background:var(--field)}
+.chips input{width:auto;min-height:0;margin:0;accent-color:#0e3b43}
+.chips label:has(input:checked){border-color:var(--brand);background:color-mix(in srgb,var(--key) 22%,var(--field))}
+.chips label:has(input:focus-visible){outline:3px solid color-mix(in srgb,var(--key) 60%,transparent)}
+.check{display:flex;gap:12px;align-items:flex-start;font-weight:400;margin:0 0 12px;cursor:pointer}
+.check input{width:22px;height:22px;min-height:0;margin-top:2px;flex:none;accent-color:#0e3b43}
+.sub{background:var(--card);border-radius:14px;padding:16px;margin-top:4px}
+[hidden]{display:none!important}
+.invalid{border-color:var(--err)!important}
+.chips.invalid label{border-color:var(--err)}
+.msg{color:var(--err);font-size:14px;margin-top:6px}
+button{font:600 18px Outfit,sans-serif;background:var(--key);color:#0e2a30;border:0;border-radius:12px;
+  padding:16px 28px;min-height:56px;width:100%;margin-top:28px;cursor:pointer}
+button:hover{filter:brightness(1.05)}button:disabled{opacity:.6;cursor:wait}
+button:focus-visible{outline:3px solid var(--brand);outline-offset:3px}
+#error{color:var(--err);font-weight:500;margin-top:14px}
+.done{text-align:center;padding:48px 8px}
+.done h2{font:700 32px/1.1 Outfit,sans-serif;margin:16px 0 10px;color:var(--brand)}
+.foot{color:var(--muted);font-size:13px;margin-top:18px;text-align:center}
+@media(max-width:600px){.grid{grid-template-columns:minmax(0,1fr)}.hwrap{grid-template-columns:minmax(0,1fr) 92px}header svg{width:92px}}
+@media(prefers-reduced-motion:no-preference){#win{animation:glow 3s ease-in-out infinite alternate}@keyframes glow{from{opacity:.55}to{opacity:1}}}
+</style>
+</head>
+<body>
+<header>
+  <div class="hwrap">
+    <div>
+      <h1>Postulación para alquilar el departamento</h1>
+      <p>Completá tus datos en unos 5 minutos. Revisamos cada postulación y te contactamos por WhatsApp.</p>
+    </div>
+    <svg viewBox="0 0 150 170" aria-hidden="true">
+      <rect x="22" y="20" width="106" height="150" rx="4" fill="#15505b"/>
+      <rect x="22" y="20" width="8" height="150" fill="#1d6673"/>
+      <g fill="#0b2e35">
+        <rect x="42" y="40" width="22" height="24" rx="2"/><rect x="86" y="40" width="22" height="24" rx="2"/>
+        <rect x="42" y="80" width="22" height="24" rx="2"/>
+        <rect x="42" y="120" width="22" height="24" rx="2"/><rect x="86" y="120" width="22" height="24" rx="2"/>
+      </g>
+      <rect id="win" x="86" y="80" width="22" height="24" rx="2" fill="#f2b632"/>
+      <circle cx="132" cy="150" r="10" fill="none" stroke="#f2b632" stroke-width="5"/>
+      <path d="M122 150h-26v8M104 150v6" stroke="#f2b632" stroke-width="5" fill="none" stroke-linecap="round"/>
+    </svg>
+  </div>
+</header>
+
+<div class="rules"><div>
+  <strong>Antes de empezar, las reglas del departamento</strong>
+  <ul>
+    <li>Para una persona sola o una pareja.</li>
+    <li>Que estudien o trabajen.</li>
+    <li>Ambiente tranquilo: sin ruidos molestos y sin visitas frecuentes.</li>
+  </ul>
+</div></div>
+
+<main>
+<form id="f" novalidate>
+  <fieldset>
+    <legend>Tus datos personales</legend>
+    <div class="grid">
+      <div><label class="req" for="nombre">Nombre</label><input id="nombre" name="nombre" autocomplete="given-name" required></div>
+      <div><label class="req" for="apellido">Apellido</label><input id="apellido" name="apellido" autocomplete="family-name" required></div>
+      <div><label class="req" for="ci">N° de cédula de identidad</label><input id="ci" name="ci" inputmode="numeric" required></div>
+      <div><label class="req" for="nacimiento">Fecha de nacimiento</label><input id="nacimiento" name="nacimiento" type="date" required></div>
+      <div><label for="nacionalidad">Nacionalidad</label><input id="nacionalidad" name="nacionalidad" value="Paraguaya"></div>
+      <div><label for="estadoCivil">Estado civil</label>
+        <select id="estadoCivil" name="estadoCivil"><option value="">Elegir…</option><option>Soltero/a</option><option>Casado/a</option><option>Unión de hecho</option><option>Divorciado/a</option><option>Viudo/a</option></select></div>
+      <div><label class="req" for="celular">Celular / WhatsApp</label><input id="celular" name="celular" type="tel" inputmode="tel" placeholder="0981 123 456" autocomplete="tel" required></div>
+      <div><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email"></div>
+      <div class="full"><label for="domicilio">Domicilio actual (barrio y ciudad)</label><input id="domicilio" name="domicilio"></div>
+      <div class="full"><label for="motivo">¿Por qué te mudás?</label><input id="motivo" name="motivo" placeholder="Ej.: cercanía al trabajo, independizarme…"></div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Trabajo y estudio</legend>
+    <div class="grid">
+      <div class="full"><label class="req">Actualmente…</label>
+        <div class="chips" data-group="ocupacion">
+          <label><input type="radio" name="ocupacion" value="Trabaja" required> Trabajo</label>
+          <label><input type="radio" name="ocupacion" value="Estudia"> Estudio</label>
+          <label><input type="radio" name="ocupacion" value="Trabaja y estudia"> Trabajo y estudio</label>
+          <label><input type="radio" name="ocupacion" value="Otro / sin ocupación"> Ninguna</label>
+        </div></div>
+    </div>
+    <div class="sub grid" id="bloqueTrabajo" hidden style="margin-top:14px">
+      <div class="full"><label class="req">¿Tenés IPS?</label>
+        <div class="chips" data-group="ips">
+          <label><input type="radio" name="ips" value="Sí"> Sí</label>
+          <label><input type="radio" name="ips" value="No"> No</label>
+        </div></div>
+      <div><label class="req" for="trabajoLugar">Lugar de trabajo (empresa)</label><input id="trabajoLugar" name="trabajoLugar"></div>
+      <div><label for="trabajoCargo">Cargo / puesto</label><input id="trabajoCargo" name="trabajoCargo"></div>
+      <div><label class="req" for="trabajoHorario">Horario de trabajo</label><input id="trabajoHorario" name="trabajoHorario" placeholder="Ej.: lun a vie 7:00 a 16:00"></div>
+      <div><label for="trabajoAntiguedad">Antigüedad</label><input id="trabajoAntiguedad" name="trabajoAntiguedad" placeholder="Ej.: 2 años"></div>
+      <div class="full"><label for="trabajoTelefono">Teléfono del trabajo (para referencia)</label><input id="trabajoTelefono" name="trabajoTelefono" type="tel"></div>
+    </div>
+    <div class="sub grid" id="bloqueEstudio" hidden style="margin-top:14px">
+      <div><label class="req" for="estudioLugar">Universidad / instituto</label><input id="estudioLugar" name="estudioLugar"></div>
+      <div><label for="estudioHorario">Horario de clases</label><input id="estudioHorario" name="estudioHorario" placeholder="Ej.: noche"></div>
+    </div>
+    <div class="grid" style="margin-top:14px">
+      <div class="full"><label class="req" for="ingreso">Tu ingreso mensual aproximado (Gs.)</label>
+        <input id="ingreso" name="ingreso" inputmode="numeric" placeholder="Ej.: 4.500.000" data-money required></div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Quiénes vivirían en el departamento</legend>
+    <div class="grid">
+      <div class="full"><label class="req">¿Cuántas personas se mudarían en total?</label>
+        <div class="chips" data-group="personas">
+          <label><input type="radio" name="personas" value="1" required> 1 (solo yo)</label>
+          <label><input type="radio" name="personas" value="2"> 2</label>
+          <label><input type="radio" name="personas" value="3"> 3</label>
+          <label><input type="radio" name="personas" value="4 o más"> 4 o más</label>
+        </div></div>
+      <div class="full" id="bloqueConvivencia" hidden><label class="req">¿Con quién te mudarías?</label>
+        <div class="chips" data-group="convivencia">
+          <label><input type="radio" name="convivencia" value="En pareja"> Con mi pareja</label>
+          <label><input type="radio" name="convivencia" value="Familiar"> Con un familiar</label>
+          <label><input type="radio" name="convivencia" value="Amigo/a o compañero/a"> Con amigo/a</label>
+          <label><input type="radio" name="convivencia" value="Grupo familiar"> Grupo familiar</label>
+        </div></div>
+    </div>
+    <div class="sub grid" id="bloquePareja" hidden style="margin-top:14px">
+      <p class="hint full" style="margin:0">Datos de la otra persona adulta que viviría con vos.</p>
+      <div><label class="req" for="parejaNombre">Nombre y apellido</label><input id="parejaNombre" name="parejaNombre"></div>
+      <div><label for="parejaCi">N° de cédula</label><input id="parejaCi" name="parejaCi" inputmode="numeric"></div>
+      <div><label for="parejaCelular">Celular</label><input id="parejaCelular" name="parejaCelular" type="tel"></div>
+      <div><label for="parejaOcupacion">Ocupación</label>
+        <select id="parejaOcupacion" name="parejaOcupacion"><option value="">Elegir…</option><option>Trabaja</option><option>Estudia</option><option>Trabaja y estudia</option><option>Ninguna</option></select></div>
+      <div><label for="parejaIps">¿Tiene IPS?</label>
+        <select id="parejaIps" name="parejaIps"><option value="">Elegir…</option><option>Sí</option><option>No</option></select></div>
+      <div><label for="parejaTrabajo">Lugar de trabajo o estudio</label><input id="parejaTrabajo" name="parejaTrabajo"></div>
+      <div><label for="parejaHorario">Horario</label><input id="parejaHorario" name="parejaHorario"></div>
+      <div><label for="parejaIngreso">Ingreso mensual aprox. (Gs.)</label><input id="parejaIngreso" name="parejaIngreso" inputmode="numeric" data-money></div>
+    </div>
+    <div class="grid" style="margin-top:14px">
+      <div class="full"><label for="ingresoTotal">Ingreso total de quienes vivirán (Gs.)</label>
+        <input id="ingresoTotal" name="ingresoTotal" inputmode="numeric" data-money placeholder="Se calcula solo, podés corregirlo"></div>
+      <div class="full"><label class="req">¿Tenés hijos que vivirían en el departamento?</label>
+        <div class="chips" data-group="hijos">
+          <label><input type="radio" name="hijos" value="No" required> No</label>
+          <label><input type="radio" name="hijos" value="Sí"> Sí</label>
+        </div></div>
+      <div class="full" id="bloqueHijos" hidden><label for="hijosDetalle">Cantidad y edades</label><input id="hijosDetalle" name="hijosDetalle" placeholder="Ej.: 1 hijo de 4 años"></div>
+      <div class="full"><label class="req">¿Tenés mascotas?</label>
+        <div class="chips" data-group="mascotas">
+          <label><input type="radio" name="mascotas" value="No" required> No</label>
+          <label><input type="radio" name="mascotas" value="Sí"> Sí</label>
+        </div></div>
+      <div class="full" id="bloqueMascotas" hidden><label for="mascotasDetalle">¿Qué mascota, cuántas y de qué tamaño?</label><input id="mascotasDetalle" name="mascotasDetalle" placeholder="Ej.: 1 gato"></div>
+      <div class="full"><label class="req">¿Tenés vehículo?</label>
+        <div class="chips" data-group="vehiculo">
+          <label><input type="radio" name="vehiculo" value="No" required> No</label>
+          <label><input type="radio" name="vehiculo" value="Auto"> Auto</label>
+          <label><input type="radio" name="vehiculo" value="Moto"> Moto</label>
+          <label><input type="radio" name="vehiculo" value="Auto y moto"> Auto y moto</label>
+        </div></div>
+      <div class="full" id="bloqueVehiculo" hidden><label for="vehiculoDetalle">Marca, modelo y chapa</label><input id="vehiculoDetalle" name="vehiculoDetalle"></div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Convivencia</legend>
+    <div class="grid">
+      <div class="full"><label class="req">¿Con qué frecuencia recibís visitas?</label>
+        <div class="chips" data-group="visitas">
+          <label><input type="radio" name="visitas" value="Casi nunca" required> Casi nunca</label>
+          <label><input type="radio" name="visitas" value="Ocasionalmente"> De vez en cuando</label>
+          <label><input type="radio" name="visitas" value="Frecuentemente"> Seguido</label>
+        </div></div>
+      <div class="full"><label class="req">¿Escuchás música fuerte o tocás algún instrumento?</label>
+        <div class="chips" data-group="ruido">
+          <label><input type="radio" name="ruido" value="No" required> No</label>
+          <label><input type="radio" name="ruido" value="A veces, volumen moderado"> A veces, volumen bajo</label>
+          <label><input type="radio" name="ruido" value="Sí, con frecuencia"> Sí, seguido</label>
+        </div></div>
+      <div class="full"><label class="req">¿Alguien fuma?</label>
+        <div class="chips" data-group="fuma">
+          <label><input type="radio" name="fuma" value="No" required> No</label>
+          <label><input type="radio" name="fuma" value="Sí, fuera del departamento"> Sí, afuera</label>
+          <label><input type="radio" name="fuma" value="Sí"> Sí</label>
+        </div></div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Mudanza y referencias</legend>
+    <div class="grid">
+      <div><label for="mudanza">¿Desde cuándo lo necesitás?</label><input id="mudanza" name="mudanza" type="date"></div>
+      <div><label for="plazo">Plazo de contrato deseado</label>
+        <select id="plazo" name="plazo"><option value="">Elegir…</option><option>6 meses</option><option>1 año</option><option>2 años o más</option></select></div>
+      <div class="full"><label>¿Contás con garante?</label>
+        <div class="chips" data-group="garante">
+          <label><input type="radio" name="garante" value="Sí"> Sí</label>
+          <label><input type="radio" name="garante" value="No"> No</label>
+          <label><input type="radio" name="garante" value="Puedo conseguir"> Puedo conseguir</label>
+        </div></div>
+      <div><label for="ref1">Referencia 1 (nombre y celular)</label><input id="ref1" name="ref1" placeholder="Ej.: anterior propietario"></div>
+      <div><label for="ref2">Referencia 2 (nombre y celular)</label><input id="ref2" name="ref2"></div>
+      <div class="full"><label for="canal">¿Cómo te enteraste del departamento?</label>
+        <select id="canal" name="canal"><option value="">Elegir…</option><option>Marketplace de Facebook</option><option>Instagram</option><option>Clasificados.com.py / InfoCasas</option><option>Cartel en el edificio</option><option>Recomendación</option><option>Otro</option></select></div>
+      <div class="full"><label for="comentarios">¿Algo más que quieras contarnos?</label><textarea id="comentarios" name="comentarios"></textarea></div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Confirmación</legend>
+    <label class="check"><input type="checkbox" name="aceptaReglas" value="Sí" required> <span class="req">Leí y acepto las reglas: departamento para persona sola o pareja que estudia o trabaja, sin ruidos molestos ni visitas frecuentes.</span></label>
+    <label class="check"><input type="checkbox" name="autorizaDatos" value="Sí" required> <span class="req">Declaro que los datos son verdaderos y autorizo a verificarlos (referencias, trabajo e IPS) solo para evaluar esta postulación.</span></label>
+  </fieldset>
+
+  <input name="sitio" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px">
+  <button type="submit" id="enviar">Enviar postulación</button>
+  <div id="error" role="alert"></div>
+  <p class="foot">Tus datos solo se usan para evaluar el alquiler. Los campos con * son obligatorios.</p>
+</form>
+
+<div class="done" id="listo" hidden>
+  <svg width="72" height="72" viewBox="0 0 72 72" aria-hidden="true"><circle cx="36" cy="36" r="34" fill="#f2b632"/><path d="M22 37l10 10 18-20" stroke="#0e2a30" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <h2>¡Postulación recibida!</h2>
+  <p>Gracias. Vamos a revisar tus datos y te escribimos por WhatsApp.</p>
+</div>
+</main>
+
+<script>
+{
+const f = document.getElementById('f');
+const $ = id => document.getElementById(id);
+const val = n => { const el = f.querySelector('[name="'+n+'"]:checked'); return el ? el.value : ''; };
+const num = s => parseInt(String(s||'').replace(/\D/g,''),10) || 0;
+const fmt = n => n ? n.toLocaleString('es-PY') : '';
+
+let totalEditado = false;
+function actualizar(){
+  const oc = val('ocupacion');
+  $('bloqueTrabajo').hidden = !/Trabaja/.test(oc);
+  $('bloqueEstudio').hidden = !/Estudia|estudia/.test(oc);
+  const p = val('personas');
+  $('bloqueConvivencia').hidden = !p || p === '1';
+  $('bloquePareja').hidden = !p || p === '1';
+  $('bloqueHijos').hidden = val('hijos') !== 'Sí';
+  $('bloqueMascotas').hidden = val('mascotas') !== 'Sí';
+  $('bloqueVehiculo').hidden = !val('vehiculo') || val('vehiculo') === 'No';
+  if (!totalEditado) {
+    const t = num($('ingreso').value) + ($('bloquePareja').hidden ? 0 : num($('parejaIngreso').value));
+    $('ingresoTotal').value = fmt(t);
+  }
+}
+f.addEventListener('change', actualizar);
+f.addEventListener('input', e => {
+  if (e.target.id === 'ingresoTotal') totalEditado = true;
+  if (e.target.hasAttribute('data-money')) {
+    const n = num(e.target.value); e.target.value = fmt(n);
+  }
+  if (e.target.classList.contains('invalid')) e.target.classList.remove('invalid');
+  const g = e.target.closest('.chips'); if (g) g.classList.remove('invalid');
+  actualizar();
+});
+
+function requeridosVisibles(){
+  const faltan = [];
+  // campos de texto con * visibles
+  f.querySelectorAll('label.req[for]').forEach(l => {
+    const el = $(l.getAttribute('for'));
+    if (el && !el.closest('[hidden]') && !el.value.trim()) faltan.push(el);
+  });
+  // grupos de opciones con * visibles
+  f.querySelectorAll('.chips[data-group]').forEach(g => {
+    const lab = g.previousElementSibling;
+    if (lab && lab.classList.contains('req') && !g.closest('[hidden]') && !val(g.dataset.group)) faltan.push(g);
+  });
+  f.querySelectorAll('input[type=checkbox][required]').forEach(c => { if (!c.checked) faltan.push(c); });
+  return faltan;
+}
+
+f.addEventListener('submit', e => {
+  e.preventDefault();
+  $('error').textContent = '';
+  f.querySelectorAll('.invalid').forEach(x => x.classList.remove('invalid'));
+  const faltan = requeridosVisibles();
+  const mail = $('email');
+  if (mail.value && !mail.checkValidity()) faltan.push(mail);
+  if (faltan.length) {
+    faltan.forEach(x => x.classList.add('invalid'));
+    $('error').textContent = 'Revisá los campos marcados en rojo (' + faltan.length + ').';
+    faltan[0].scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  const datos = {};
+  new FormData(f).forEach((v, k) => {
+    const el = f.querySelector('[name="'+k+'"]');
+    if (el && el.closest('[hidden]')) return; // no enviar bloques ocultos
+    datos[k] = v;
+  });
+  if (!datos.convivencia) datos.convivencia = datos.personas === '1' ? 'Sola' : '';
+  const btn = $('enviar'); btn.disabled = true; btn.textContent = 'Enviando…';
+  const ok = () => { f.hidden = true; $('listo').hidden = false; window.scrollTo(0,0); };
+  const fallo = err => {
+    btn.disabled = false; btn.textContent = 'Enviar postulación';
+    $('error').textContent = 'No se pudo enviar: ' + ((err && err.message) || 'probá de nuevo en un momento.');
+  };
+  fetch('/api/postular', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(datos)})
+    .then(r => r.json().then(j => { if (!r.ok) throw new Error(j.error); ok(); }))
+    .catch(fallo);
+});
+actualizar();
+}
+</script>
+</body>
+</html>

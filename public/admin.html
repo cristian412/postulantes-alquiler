@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Panel de postulantes</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light dark;
+  --bg:light-dark(#f4f8f8,#0b2328);--card:light-dark(#ffffff,#10303a);--ink:light-dark(#0e2a30,#e8f2f3);
+  --muted:light-dark(#4b6469,#a9c1c5);--line:light-dark(#d5e1e3,#2a4c55);--brand:#0e3b43;--key:#f2b632;
+  --a:light-dark(#1f7a4a,#6fdc9f);--b:light-dark(#9a6a00,#f2c55c);--c:light-dark(#b42318,#ff8a80);--err:light-dark(#b42318,#ff8a80)}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif}
+header{background:var(--brand);color:#fff;padding:16px max(4vw,14px);position:sticky;top:0;z-index:5}
+.top{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+h1{font:700 22px/1.1 Outfit,sans-serif;margin:0;flex:1}
+.tabs{display:flex;gap:6px}
+.tabs button{background:transparent;color:#cfe6ea;border:1.5px solid #3c6a73;border-radius:999px;padding:8px 14px;min-height:40px;font:600 15px Inter,sans-serif;cursor:pointer}
+.tabs button.on{background:var(--key);color:#0e2a30;border-color:var(--key)}
+main{max-width:900px;margin:0 auto;padding:16px max(4vw,14px) 60px}
+input,select,textarea{font:16px Inter,sans-serif;color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px;width:100%}
+textarea{min-height:70px}
+button.btn{font:600 16px Outfit,sans-serif;background:var(--key);color:#0e2a30;border:0;border-radius:10px;padding:12px 20px;min-height:46px;cursor:pointer}
+button.sec{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+button.peligro{background:transparent;color:var(--err);border:1.5px solid var(--err)}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--key) 70%,transparent);outline-offset:2px}
+.login{max-width:360px;margin:12vh auto;background:var(--card);padding:28px;border-radius:16px;border:1px solid var(--line)}
+.login h2{font:700 26px Outfit,sans-serif;margin:0 0 14px}
+.login button{width:100%;margin-top:12px}
+.err{color:var(--err);margin-top:10px;min-height:1.4em}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.stat b{display:block;font:700 26px Outfit,sans-serif}
+.stat span{font-size:13px;color:var(--muted)}
+.filtros{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr);gap:8px;margin-bottom:10px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.chips button{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;min-height:40px;font:500 15px Inter,sans-serif;cursor:pointer}
+.chips button.on{border-color:var(--brand);background:color-mix(in srgb,var(--key) 30%,var(--card))}
+.item{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden}
+.fila{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;cursor:pointer;width:100%;background:none;border:0;color:inherit;text-align:left;font:inherit}
+.score{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font:700 22px Outfit,sans-serif;border:4px solid}
+.cat-A{color:var(--a);border-color:var(--a)}.cat-B{color:var(--b);border-color:var(--b)}.cat-C{color:var(--c);border-color:var(--c)}
+.nom{font:600 17px Outfit,sans-serif}
+.meta{color:var(--muted);font-size:14px}
+.tag{display:inline-block;font-size:12.5px;padding:2px 8px;border-radius:999px;margin:4px 4px 0 0;background:color-mix(in srgb,var(--c) 14%,transparent);color:var(--c)}
+.tag.ok{background:color-mix(in srgb,var(--a) 14%,transparent);color:var(--a)}
+.estado{font-size:13px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--bg);white-space:nowrap}
+.det{border-top:1px solid var(--line);padding:14px;display:none}
+.item.abierto .det{display:block}
+.acciones{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.acciones a{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 18px;border-radius:10px;background:#25d366;color:#06301a;font:600 16px Outfit,sans-serif;text-decoration:none}
+dl{display:grid;grid-template-columns:minmax(0,11em) minmax(0,1fr);gap:4px 12px;margin:0 0 14px;font-size:15px}
+dt{color:var(--muted)}dd{margin:0;overflow-wrap:anywhere}
+h3{font:600 17px Outfit,sans-serif;margin:16px 0 8px}
+.barra{display:grid;grid-template-columns:minmax(0,10em) minmax(0,1fr) 4.5em;gap:8px;align-items:center;font-size:14px;margin-bottom:4px}
+.barra i{display:block;height:8px;border-radius:4px;background:var(--line);position:relative;overflow:hidden}
+.barra i::after{content:"";position:absolute;inset:0;width:var(--w);background:var(--brand)}
+:root:not([data-theme=light]) .barra i::after{background:light-dark(var(--brand),#7fd0dc)}
+.barra span:last-child{text-align:right;white-space:nowrap}
+.pesos{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.peso{display:grid;grid-template-columns:minmax(0,1fr) 90px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.peso small{display:block;color:var(--muted);font-size:13px}
+.vacio{text-align:center;color:var(--muted);padding:40px 10px}
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--brand);color:#fff;padding:12px 18px;border-radius:10px;display:none}
+@media(max-width:600px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.filtros{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.filtros input{grid-column:1/-1}dl{grid-template-columns:minmax(0,1fr)}dt{margin-top:6px}.fila{grid-template-columns:58px minmax(0,1fr)}.fila .estado{grid-column:2;justify-self:start}}
+</style>
+</head>
+<body>
+<div id="vLogin" class="login">
+  <h2>Panel de postulantes</h2>
+  <label for="pass">Contraseña</label>
+  <input id="pass" type="password" autocomplete="current-password">
+  <button class="btn" id="entrar">Entrar</button>
+  <div class="err" id="errLogin" role="alert"></div>
+</div>
+
+<div id="vApp" hidden>
+<header><div class="top">
+  <h1>Postulantes</h1>
+  <div class="tabs"><button id="tLista" class="on">Lista</button><button id="tPesos">Ponderación</button></div>
+</div></header>
+<main>
+  <section id="sLista">
+    <div class="stats" id="stats"></div>
+    <div class="filtros">
+      <input id="buscar" type="search" placeholder="Buscar por nombre, cédula o celular">
+      <select id="fEstado"><option value="">Todos los estados</option></select>
+      <select id="orden"><option value="puntaje">Mayor puntaje</option><option value="fecha">Más recientes</option></select>
+    </div>
+    <div class="chips" id="fCat">
+      <button data-c="" class="on">Todas</button><button data-c="A">A · Muy recomendable</button><button data-c="B">B · Aceptable</button><button data-c="C">C · Poco recomendable</button>
+    </div>
+    <div id="lista"></div>
+    <div class="acciones" style="margin-top:16px"><button class="btn sec" id="csv">Descargar Excel (CSV)</button><button class="btn sec" id="recargar">Actualizar</button></div>
+  </section>
+
+  <section id="sPesos" hidden>
+    <div class="pesos">
+      <p class="meta" style="margin-top:0">Cambiá cuánto vale cada criterio. No hace falta que sumen 100: el puntaje siempre queda de 0 a 100. Con 0, el criterio no cuenta.</p>
+      <div id="listaPesos"></div>
+      <h3>Ajustes</h3>
+      <div class="peso"><label for="aAlquiler">Alquiler mensual (Gs.)<small>Los ingresos se comparan contra este monto</small></label><input id="aAlquiler" inputmode="numeric"></div>
+      <div class="peso"><label for="aA">Mínimo para categoría A<small>Además tiene que cumplir todas las reglas</small></label><input id="aA" type="number" min="0" max="100"></div>
+      <div class="peso"><label for="aB">Mínimo para categoría B<small>Por debajo es C</small></label><input id="aB" type="number" min="0" max="100"></div>
+      <button class="btn" id="guardarPesos" style="margin-top:16px;width:100%">Guardar y recalcular</button>
+    </div>
+  </section>
+</main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+{
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = n => (parseInt(String(n||'').replace(/\D/g,''),10)||0).toLocaleString('es-PY');
+const ETQ = {nombre:'Nombre',apellido:'Apellido',ci:'Cédula',nacimiento:'Nacimiento',nacionalidad:'Nacionalidad',estadoCivil:'Estado civil',celular:'Celular',email:'Email',domicilio:'Domicilio actual',motivo:'Motivo de mudanza',ocupacion:'Ocupación',ips:'IPS',trabajoLugar:'Lugar de trabajo',trabajoCargo:'Cargo',trabajoAntiguedad:'Antigüedad',trabajoHorario:'Horario de trabajo',trabajoTelefono:'Tel. del trabajo',estudioLugar:'Estudia en',estudioHorario:'Horario de estudio',ingreso:'Ingreso (Gs.)',personas:'Personas',convivencia:'Se muda',parejaNombre:'Acompañante',parejaCi:'Cédula acompañante',parejaCelular:'Celular acompañante',parejaOcupacion:'Ocupación acompañante',parejaIps:'IPS acompañante',parejaTrabajo:'Trabajo/estudio acompañante',parejaHorario:'Horario acompañante',parejaIngreso:'Ingreso acompañante (Gs.)',ingresoTotal:'Ingreso total (Gs.)',hijos:'Hijos',hijosDetalle:'Detalle hijos',mascotas:'Mascotas',mascotasDetalle:'Detalle mascotas',vehiculo:'Vehículo',vehiculoDetalle:'Detalle vehículo',visitas:'Visitas',ruido:'Música / ruido',fuma:'Fuma',mudanza:'Fecha de mudanza',plazo:'Plazo',garante:'Garante',ref1:'Referencia 1',ref2:'Referencia 2',canal:'Se enteró por',comentarios:'Comentarios'};
+let pass = '', datos = null, cat = '', abiertos = new Set();
+try { pass = sessionStorage.getItem('adm') || ''; } catch(e) {}
+
+function toast(t){ const el=$('toast'); el.textContent=t; el.style.display='block'; clearTimeout(toast.t); toast.t=setTimeout(()=>el.style.display='none',2500); }
+
+async function api(method, body){
+  const r = await fetch('/api/admin', {method, headers:{'Content-Type':'application/json','x-admin-password':pass}, body: body?JSON.stringify(body):undefined});
+  const j = await r.json().catch(()=>({error:'Respuesta inválida'}));
+  if (r.status === 401) { salir(); throw new Error(j.error); }
+  if (!r.ok) throw new Error(j.error || 'Error');
+  return j;
+}
+function salir(){ try{sessionStorage.removeItem('adm')}catch(e){} $('vApp').hidden=true; $('vLogin').hidden=false; }
+
+async function cargar(){
+  datos = await api('GET');
+  $('fEstado').innerHTML = '<option value="">Todos los estados</option>' + datos.estados.map(e=>`<option>${esc(e)}</option>`).join('');
+  pintarPesos(); pintar();
+}
+
+async function entrar(){
+  pass = $('pass').value || pass;
+  $('errLogin').textContent = '';
+  try {
+    await cargar();
+    try{sessionStorage.setItem('adm',pass)}catch(e){}
+    $('vLogin').hidden=true; $('vApp').hidden=false;
+  } catch(e){ $('errLogin').textContent = e.message; }
+}
+$('entrar').onclick = entrar;
+$('pass').onkeydown = e => { if (e.key==='Enter') entrar(); };
+
+function filtrados(){
+  const q = $('buscar').value.trim().toLowerCase(), est = $('fEstado').value;
+  let l = datos.lista.filter(it => (!cat || it.categoria===cat) && (!est || it.estado===est) &&
+    (!q || [it.datos.nombre,it.datos.apellido,it.datos.ci,it.datos.celular].join(' ').toLowerCase().includes(q)));
+  l.sort($('orden').value==='fecha' ? (a,b)=>b.fecha-a.fecha : (a,b)=>b.puntaje-a.puntaje || b.fecha-a.fecha);
+  return l;
+}
+
+function wa(cel){ let n=String(cel||'').replace(/\D/g,''); if(n.startsWith('0')) n='595'+n.slice(1); return 'https://wa.me/'+n; }
+
+function pintar(){
+  const L = datos.lista;
+  const cuenta = c => L.filter(i=>i.categoria===c).length;
+  $('stats').innerHTML = [['Total',L.length],['Categoría A',cuenta('A')],['Categoría B',cuenta('B')],['Categoría C',cuenta('C')]]
+    .map(([t,n])=>`<div class="stat"><b>${n}</b><span>${t}</span></div>`).join('');
+  const l = filtrados();
+  if (!l.length) { $('lista').innerHTML = `<div class="vacio">${L.length?'Ningún postulante con esos filtros.':'Todavía no hay postulaciones. Compartí el link del formulario.'}</div>`; return; }
+  $('lista').innerHTML = l.map(it => {
+    const d = it.datos, f = new Date(it.fecha).toLocaleDateString('es-PY',{day:'2-digit',month:'2-digit'});
+    const tags = it.obs.length ? it.obs.map(o=>`<span class="tag">${esc(o)}</span>`).join('') : '<span class="tag ok">cumple las reglas</span>';
+    const campos = Object.keys(ETQ).filter(k=>d[k]).map(k=>`<dt>${ETQ[k]}</dt><dd>${esc(/ingreso/i.test(k)?fmt(d[k]):d[k])}</dd>`).join('');
+    const barras = it.detalle.map(x=>`<div class="barra"><span>${esc(x.nombre)}</span><i style="--w:${x.peso?x.pts/x.peso*100:0}%"></i><span>${x.pts}/${x.peso}</span></div>`).join('');
+    return `<div class="item ${abiertos.has(it.id)?'abierto':''}" data-id="${esc(it.id)}">
+      <button class="fila" data-abrir>
+        <div class="score cat-${it.categoria}">${it.puntaje}</div>
+        <div><div class="nom">${esc(d.nombre)} ${esc(d.apellido)}</div>
+          <div class="meta">${esc(d.personas)} pers. · Gs. ${fmt(d.ingresoTotal||d.ingreso)} · ${esc(d.ocupacion)} · ${f}</div>${tags}</div>
+        <span class="estado">${esc(it.estado)}</span>
+      </button>
+      <div class="det">
+        <div class="acciones">
+          <a href="${wa(d.celular)}" target="_blank" rel="noopener">WhatsApp ${esc(d.celular)}</a>
+          <select data-estado aria-label="Estado" style="width:auto">${datos.estados.map(e=>`<option ${e===it.estado?'selected':''}>${esc(e)}</option>`).join('')}</select>
+        </div>
+        <h3>Puntaje ${it.puntaje}/100 · Categoría ${it.categoria}</h3>${barras}
+        <h3>Datos</h3><dl>${campos}</dl>
+        <label>Mis notas<textarea data-nota>${esc(it.nota)}</textarea></label>
+        <div class="acciones" style="margin-top:10px"><button class="btn sec" data-guardarnota>Guardar nota</button><button class="btn peligro" data-borrar>Eliminar</button></div>
+      </div></div>`;
+  }).join('');
+}
+
+$('lista').addEventListener('click', async e => {
+  const item = e.target.closest('.item'); if (!item) return;
+  const id = item.dataset.id;
+  if (e.target.closest('[data-abrir]')) { item.classList.toggle('abierto'); item.classList.contains('abierto')?abiertos.add(id):abiertos.delete(id); }
+  if (e.target.closest('[data-guardarnota]')) {
+    const nota = item.querySelector('[data-nota]').value;
+    try { await api('PATCH',{id,nota}); datos.lista.find(x=>x.id===id).nota=nota; toast('Nota guardada'); } catch(err){ toast(err.message); }
+  }
+  if (e.target.closest('[data-borrar]')) {
+    const b = e.target.closest('[data-borrar]');
+    if (b.dataset.ok !== '1') { b.dataset.ok='1'; b.textContent='Tocá de nuevo para eliminar'; return; }
+    try { await api('DELETE',{id}); datos.lista = datos.lista.filter(x=>x.id!==id); pintar(); toast('Eliminado'); } catch(err){ toast(err.message); }
+  }
+});
+$('lista').addEventListener('change', async e => {
+  if (!e.target.matches('[data-estado]')) return;
+  const id = e.target.closest('.item').dataset.id, estado = e.target.value;
+  try { await api('PATCH',{id,estado}); datos.lista.find(x=>x.id===id).estado=estado; pintar(); toast('Estado: '+estado); } catch(err){ toast(err.message); }
+});
+
+$('fCat').onclick = e => { const b=e.target.closest('button'); if(!b) return; cat=b.dataset.c; [...$('fCat').children].forEach(x=>x.classList.toggle('on',x===b)); pintar(); };
+['buscar','fEstado','orden'].forEach(id => $(id).addEventListener('input', pintar));
+$('recargar').onclick = () => cargar().then(()=>toast('Actualizado')).catch(e=>toast(e.message));
+
+$('csv').onclick = () => {
+  const cols = Object.keys(ETQ);
+  const q = v => '"' + String(v??'').replace(/"/g,'""') + '"';
+  const filas = [['Fecha','Puntaje','Categoría','Estado','Observaciones',...cols.map(k=>ETQ[k]),'Notas'].map(q).join(';')]
+    .concat(filtrados().map(it => [new Date(it.fecha).toLocaleString('es-PY'),it.puntaje,it.categoria,it.estado,it.obs.join(', '),...cols.map(k=>it.datos[k]),it.nota].map(q).join(';')));
+  const blob = new Blob(['﻿'+filas.join('\r\n')], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'postulantes.csv'; a.click();
+};
+
+function pintarPesos(){
+  const aj = datos.ajustes;
+  $('listaPesos').innerHTML = datos.criterios.map(c => `<div class="peso"><label for="p_${c.k}">${esc(c.nombre)}<small>${esc(c.como)}</small></label><input id="p_${c.k}" type="number" min="0" max="100" value="${aj.pesos[c.k]??0}"></div>`).join('');
+  $('aAlquiler').value = fmt(aj.alquiler); $('aA').value = aj.umbralA; $('aB').value = aj.umbralB;
+}
+$('aAlquiler').addEventListener('input', e => { e.target.value = fmt(e.target.value); });
+$('guardarPesos').onclick = async () => {
+  const pesos = {}; datos.criterios.forEach(c => pesos[c.k] = Number($('p_'+c.k).value)||0);
+  const ajustes = { pesos, alquiler: parseInt($('aAlquiler').value.replace(/\D/g,''),10)||0, umbralA:Number($('aA').value), umbralB:Number($('aB').value) };
+  try { await api('PUT',{ajustes}); await cargar(); toast('Ponderación guardada'); } catch(e){ toast(e.message); }
+};
+
+function tab(lista){ $('sLista').hidden=!lista; $('sPesos').hidden=lista; $('tLista').classList.toggle('on',lista); $('tPesos').classList.toggle('on',!lista); }
+$('tLista').onclick = () => tab(true); $('tPesos').onclick = () => tab(false);
+
+if (pass) entrar();
+}
+</script>
+</body>
+</html>

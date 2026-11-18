@@ -1,0 +1,9 @@
+{
+  "name": "postulantes-alquiler",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@upstash/redis": "1.41.0"
+  }
+}
