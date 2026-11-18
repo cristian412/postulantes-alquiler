@@ -3,8 +3,10 @@
 - `/` → formulario para postulantes
 - `/admin` → panel con contraseña: lista, puntaje, filtros, estados, notas, ponderación y descarga CSV
 
-## Configuración en Vercel
-1. Importar este repositorio en Vercel.
+## Netlify (recomendado)
+1. Importar este repositorio en Netlify (Add new project → Import from GitHub).
 2. Variable de entorno `ADMIN_PASSWORD` = la contraseña del panel.
-3. Storage → agregar **Upstash for Redis** (plan gratuito) y conectarlo al proyecto.
-4. Redeploy.
+3. Deploy. Los datos se guardan en Netlify Blobs (incluido, sin configurar nada).
+
+## Vercel (alternativa)
+Variable `ADMIN_PASSWORD` y Storage → Upstash for Redis.

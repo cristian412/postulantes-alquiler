@@ -2,8 +2,11 @@
   "name": "postulantes-alquiler",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
-    "@upstash/redis": "1.41.0"
+    "@upstash/redis": "1.41.0",
+    "@netlify/blobs": "11.1.7"
   }
 }
