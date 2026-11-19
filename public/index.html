@@ -134,13 +134,7 @@ button:focus-visible{outline:3px solid var(--brand);outline-offset:3px}
         </div></div>
       <div><label class="req" for="trabajoLugar">Lugar de trabajo (empresa)</label><input id="trabajoLugar" name="trabajoLugar"></div>
       <div><label for="trabajoCargo">Cargo / puesto</label><input id="trabajoCargo" name="trabajoCargo"></div>
-      <div><label class="req" for="trabajoHorario">Horario de trabajo</label><input id="trabajoHorario" name="trabajoHorario" placeholder="Ej.: lun a vie 7:00 a 16:00"></div>
-      <div><label for="trabajoAntiguedad">Antigüedad</label><input id="trabajoAntiguedad" name="trabajoAntiguedad" placeholder="Ej.: 2 años"></div>
-      <div class="full"><label for="trabajoTelefono">Teléfono del trabajo (para referencia)</label><input id="trabajoTelefono" name="trabajoTelefono" type="tel"></div>
-    </div>
-    <div class="sub grid" id="bloqueEstudio" hidden style="margin-top:14px">
-      <div><label class="req" for="estudioLugar">Universidad / instituto</label><input id="estudioLugar" name="estudioLugar"></div>
-      <div><label for="estudioHorario">Horario de clases</label><input id="estudioHorario" name="estudioHorario" placeholder="Ej.: noche"></div>
+      <div class="full"><label for="trabajoAntiguedad">Antigüedad</label><input id="trabajoAntiguedad" name="trabajoAntiguedad" placeholder="Ej.: 2 años"></div>
     </div>
     <div class="grid" style="margin-top:14px">
       <div class="full"><label class="req" for="ingreso">Tu ingreso mensual aproximado (Gs.)</label>
@@ -229,25 +223,6 @@ button:focus-visible{outline:3px solid var(--brand);outline-offset:3px}
     </div>
   </fieldset>
 
-  <fieldset>
-    <legend>Mudanza y referencias</legend>
-    <div class="grid">
-      <div><label for="mudanza">¿Desde cuándo lo necesitás?</label><input id="mudanza" name="mudanza" type="date"></div>
-      <div><label for="plazo">Plazo de contrato deseado</label>
-        <select id="plazo" name="plazo"><option value="">Elegir…</option><option>6 meses</option><option>1 año</option><option>2 años o más</option></select></div>
-      <div class="full"><label>¿Contás con garante?</label>
-        <div class="chips" data-group="garante">
-          <label><input type="radio" name="garante" value="Sí"> Sí</label>
-          <label><input type="radio" name="garante" value="No"> No</label>
-          <label><input type="radio" name="garante" value="Puedo conseguir"> Puedo conseguir</label>
-        </div></div>
-      <div><label for="ref1">Referencia 1 (nombre y celular)</label><input id="ref1" name="ref1" placeholder="Ej.: anterior propietario"></div>
-      <div><label for="ref2">Referencia 2 (nombre y celular)</label><input id="ref2" name="ref2"></div>
-      <div class="full"><label for="canal">¿Cómo te enteraste del departamento?</label>
-        <select id="canal" name="canal"><option value="">Elegir…</option><option>Marketplace de Facebook</option><option>Instagram</option><option>Clasificados.com.py / InfoCasas</option><option>Cartel en el edificio</option><option>Recomendación</option><option>Otro</option></select></div>
-      <div class="full"><label for="comentarios">¿Algo más que quieras contarnos?</label><textarea id="comentarios" name="comentarios"></textarea></div>
-    </div>
-  </fieldset>
 
   <fieldset>
     <legend>Confirmación</legend>
@@ -280,7 +255,6 @@ let totalEditado = false;
 function actualizar(){
   const oc = val('ocupacion');
   $('bloqueTrabajo').hidden = !/Trabaja/.test(oc);
-  $('bloqueEstudio').hidden = !/Estudia|estudia/.test(oc);
   const p = val('personas');
   $('bloqueConvivencia').hidden = !p || p === '1';
   $('bloquePareja').hidden = !p || p === '1';
